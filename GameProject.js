@@ -1,0 +1,97 @@
+//My kick-ass code
+//Variable initiation
+let answer = document.getElementById('answer');
+let attempt = document.getElementById('attempt');
+
+//User guess
+function guess() {
+    let input = document.getElementById('user-guess');
+    //add functionality to guess function here
+    if (answer.value == '' || attempt.value == '') {
+      setHiddenFields();
+    }
+    if (!validateInput(input.value)) {
+      return false;
+    }
+    else {
+      attempt.value++;
+    }
+    if (getResults(input.value)) {
+      setMessage('You Win! :)');
+      showAnswer(true);
+      showReplay();
+    }
+    else if (attempt.value >= 10) {
+      setMessage('You Lose! :(');
+      showAnswer(false);
+      showReplay();
+    }
+    else {
+      setMessage('Incorrect, try again.');
+    }
+}
+
+//Position checking (right or wrong)
+function getResults(input) {
+  let html = '<div class="row"><span class="col-md-6">' + input + '</span><div class="col-md-6">';
+  for(var i = 0; i < input.length; i++) {
+    if (input.charAt(i) == answer.value.charAt(i)) {
+      html += '<span class="glyphicon glyphicon-ok"></span>';
+    }
+    else if (answer.value.indexOf(input.charAt(i)) >= 0){
+      html += '<span class="glyphicon glyphicon-transfer"></span>';
+    }
+    else {
+      html += '<span class="glyphicon glyphicon-remove"></span>';
+    }
+  }
+  html += '</div></div>';
+  document.getElementById('results').innerHTML += html;
+  if (input == answer.value) {
+    return true;
+  }
+  return false;
+}
+
+//Generation of hidden number
+function setHiddenFields() {
+  answer.value = Math.floor(getRandomInteger(10000, 0)).toString;
+  while (answer.length < 4) {
+    answer.value = "0" + answer.value.toString;
+  }
+  attempt.value = "0";
+}
+
+//Setting message displayed (during win, loss, or niether)
+function setMessage(message) {
+  document.getElementById('message').innerHTML = message;
+}
+
+//Shows answer and determines if win or loss
+function showAnswer(success) {
+  let code = document.getElementById('code');
+  if (success) {
+    code.className += ' success';
+  }
+  else {
+    code.className += ' failure';
+  }
+  code.innerHTML = answer.value;
+}
+
+//Allows user to play again!
+function showReplay() {
+  document.getElementById('guessing-div').tyle.display = "none";
+  document.getElementById('replay-div').tyle.display = "block";
+}
+
+//Validation of user input
+function validateInput(input) {
+  if (input.length == 4) {
+    return true;
+  }
+  else {
+    setMessage("Guesses must be exactly 4 characters long.");
+    return false;
+  }
+}
